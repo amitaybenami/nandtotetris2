@@ -35,7 +35,7 @@ class Parser
 			end
 			if command != "return"	
 				_arg1 = getWord(listedLine)
-				if not _arg1 or left(_arg1,2) = "//"
+				if not _arg1 or left(strip(_arg1),2) = "//"
 					raise("ParsingError: " + command + " command should have arguments")
 				end
 			else _arg1 = null
@@ -45,14 +45,14 @@ class Parser
 		end
 		if command = "push" or command = "pop" or command = "function" or command = "call" 
 			_arg2 = getWord(listedLine)
-			if not _arg2 or left(_arg2,2) = "//"
+			if not _arg2 or left(strip(_arg2),2) = "//"
 				raise("ParsingError: " + command + " command should have arguments")
 			end
 		else 
 			_arg2 = null
 		end
-		if listedLine[1] and left(getWord(listedLine),2) != "//"
-			raise("ParsingError: too many arguments for " + command + "command")
+		if listedLine[1] and left(strip(listedLine[1]),2) != "//"
+			raise("ParsingError: too many arguments for " + command + " command")
 		end
 		readNextLine()	
 
@@ -106,7 +106,7 @@ class Parser
 	func getWord(listedLine)
 	//gets a line by reference and cuts a word from it and returns the word	
 		line = listedLine[1]
-		i = substr(line," ")
+		i = first(substr(line," "), substr(line,"	"))
 		if i = 0 //last word
 			listedLine[1] = ""	
 			return line
@@ -115,6 +115,14 @@ class Parser
 		listedLine[1] = strip(substr(line,i+1))
 		return word
 	
+	func first(x, y) //to return the first to appear (smallest and not 0)
+		if x < y and x != 0
+			return x
+		elseif y != 0
+			return y
+		else return x
+		end
+
 	func strip(line)
 		if not line	
 			return null
