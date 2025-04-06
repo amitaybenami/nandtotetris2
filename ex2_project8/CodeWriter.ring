@@ -103,18 +103,22 @@ class CodeWriter
 	end
 
 	func writeLabel label //writes assembly for a label command
+		fwrite(outputfile, "//label " + label + nl)	
 		fwrite(outputfile, "(" + currentFunc + "$" + label + ")" + nl)
 
 	func writeGoto label //writes assembly for a goto command
+		fwrite(outputfile, "//goto" + label + nl)	
 		fwrite(outputfile, "@" + currentFunc + "$" + label + nl)
 		fwrite(outputfile, "0;JMP" + nl)
 	
 	func writeIf label //writes assembly for a if-goto command
+		fwrite(outputfile, "//if-goto" + label + nl)	
 		popToD()
 		fwrite(outputfile, "@" + currentFunc + "$" + label + nl)
 		fwrite(outputfile, "D;JNE" + nl)
 
 	func writeFunction functionName, nVars //writes assembly for a function command
+		fwrite(outputfile, "//function " + functionName + nVars + nl)	
 		newFunc(functionName)
 		fwrite(outputfile, "(" + currentFunc + ")" + nl)
 
@@ -132,6 +136,7 @@ class CodeWriter
 		end
 
 	func writeCall functionName, nVars //writes assembly for a call command
+		fwrite(outputfile, "//call " + functionName + nVars + nl)	
 		pushFromMemory(currentFunc + "$ret." + returns)
 		pushFromMemory("LCL")
 		pushFromMemory("ARG")
@@ -154,6 +159,7 @@ class CodeWriter
 		returns ++
 		
 	func writeReturn //writes assembly for a return command
+		fwrite(outputfile, "//return" + nl)	
 		//save LCL as temp
 		fwrite(outputfile, "@LCL" + nl)
 		fwrite(outputfile, "D=M" + nl)
@@ -171,7 +177,7 @@ class CodeWriter
 		fwrite(outputfile, "M=D" + nl)
 		//reset SP for caller
 		fwrite(outputfile, "@ARG" + nl)
-		fwrite(outputfile, "D=A+1" + nl)
+		fwrite(outputfile, "D=M+1" + nl)
 		fwrite(outputfile, "@SP" + nl)
 		fwrite(outputfile, "M=D" + nl)
 		//reset THAT for caller
