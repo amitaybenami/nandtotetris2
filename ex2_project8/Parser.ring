@@ -20,18 +20,18 @@ class Parser
 	func advance //reads the next command and make it the current command
 		listedLine = [nextLine] //to pass by reference	
 		command = getWord(listedLine)
-		if command = "add" or command = "sub" or command = "neg" or command = "eq"
-		or command = "gt" or command = "lt" or command = "and" or command = "or" 
-		or command = "not"
+		if command = "add" or command = "sub" or command = "neg" or 
+		command = "eq" or command = "gt" or command = "lt" or 
+		command = "and" or command = "or" or command = "not"
 			_commandType = "C_ARITHMETIC"
 			_arg1 = command
-		elseif command = "push" or command = "pop" or command = "label"
-		or command = "goto" or command = "call" or command = "return" 
-		or command = "function" or command = "if-goto"
+		elseif command = "push" or command = "pop" or command = "label" or 
+		command = "goto" or command = "call" or command = "return" or 
+		command = "function" or command = "if-goto"
 			if command != "if-goto"
 				_commandType = "C_" + upper(command)
 			else
-				command = "C_IF"
+				_commandType = "C_IF"
 			end
 			if command != "return"	
 				_arg1 = getWord(listedLine)
@@ -45,7 +45,7 @@ class Parser
 		end
 		if command = "push" or command = "pop" or command = "function" or command = "call" 
 			_arg2 = getWord(listedLine)
-			if not _arg2 or left(_arg2,_2) = "//"
+			if not _arg2 or left(_arg2,2) = "//"
 				raise("ParsingError: " + command + " command should have arguments")
 			end
 		else 

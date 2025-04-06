@@ -1,18 +1,18 @@
 class CodeWriter
 	
-	func init filename //constuctor - opens the output file	for writing
-		outputfile = fopen(filename, "w")
+	func init filepath //constuctor - opens the output file	for writing
+		outputfile = fopen(filepath, "w")
 
-	func setFileName filename
+	func setFileName _filename
 		//inform the codeWriter about new file reading
-		filename = left(filename,len(filename)-3)//without .vm extension
+		filename = left(_filename,len(_filename)-3)//without .vm extension
 
 	func writeArithmetic command
 	//writes assembly for given arithmetic command in output file
 		fwrite(outputfile, "//" + command + nl)	
 		fwrite(outputfile, "@SP" + nl)
-		if command = "add" or command = "sub" or command = "eq" or command = "gt"
-		or command = "lt" or command = "and" or command = "or"//two operands
+		if command = "add" or command = "sub" or command = "eq" or command = "gt" or 
+		command = "lt" or command = "and" or command = "or"//two operands
 			fwrite(outputfile, "AM=M-1" + nl)		
 			fwrite(outputfile, "D=M" + nl)//pop
 			fwrite(outputfile, "A=A-1" + nl)
@@ -100,16 +100,16 @@ class CodeWriter
 	end
 
 	func writeLabel label //writes assembly for a label command
-		fwrite("(" + filename + "." + label + ")" + nl)
+		fwrite(outputfile, "(" + filename + "." + label + ")" + nl)
 
 	func writeGoto label //writes assembly for a goto command
-		fwrite("@" + filename + "." + label + nl)
-		fwrite("0;JMP" + nl)
+		fwrite(outputfile, "@" + filename + "." + label + nl)
+		fwrite(outputfile, "0;JMP" + nl)
 	
 	func writeIf label //writes assembly for a if-goto command
 		popToD()
-		fwrite("@" + filename + "." + label + nl)
-		fwrite("D;JNE" + nl)
+		fwrite(outputfile, "@" + filename + "." + label + nl)
+		fwrite(outputfile, "D;JNE" + nl)
 
 	func writeFunction functionName, nVars
 		

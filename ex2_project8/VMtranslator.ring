@@ -13,7 +13,7 @@ func main
 	codeWriter = new CodeWriter(left(filePath,len(filePath)-3) + ".asm")
 	codeWriter.setFileName(filename)
 	
-	?"start translating"
+	?"start translating " + filename
 	while(parser.hasMoreCommands())
 		parser.advance()
 		commandType = parser.commandType()
@@ -24,6 +24,15 @@ func main
 			arg1 = parser.arg1()
 			arg2 = parser.arg2()
 			codeWriter.writePushPop(commandType, arg1, arg2)
+		elseif commandType = "C_LABEL"
+			arg1 = parser.arg1()
+			codeWriter.writeLabel(arg1)
+		elseif commandType = "C_GOTO"
+			arg1 = parser.arg1()
+			codeWriter.writeGoto(arg1)
+		elseif commandType = "C_IF"
+			arg1 = parser.arg1()
+			codeWriter.writeIf(arg1)
 		end
 	end
 	?"translation successed!"
