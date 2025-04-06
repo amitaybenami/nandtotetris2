@@ -19,7 +19,7 @@ D=M
 @R13
 A=M
 M=D
-(BasicLoop.LOOP_START)
+(BasicLoop$LOOP_START)
 //C_PUSH argument 0
 @ARG
 D=M
@@ -113,7 +113,7 @@ M=M+1
 @SP
 AM=M-1
 D=M
-@BasicLoop.LOOP_START
+@BasicLoop$LOOP_START
 D;JNE
 //C_PUSH local 0
 @LCL

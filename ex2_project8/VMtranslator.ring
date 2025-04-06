@@ -17,22 +17,29 @@ func main
 	while(parser.hasMoreCommands())
 		parser.advance()
 		commandType = parser.commandType()
-		if commandType = "C_ARITHMETIC"
+		if commandType != "C_RETURN"
 			arg1 = parser.arg1()
+		end
+		if commandType = "C_PUSH" or commandType = "C_POP" or commandType = "C_CALL" or
+		commandType = "C_FUNCTION"
+			arg2 = parser.arg2()
+		end
+		if commandType = "C_ARITHMETIC"
 			codeWriter.writeArithmetic(arg1)	
 		elseif commandType = "C_PUSH" or commandType = "C_POP"
-			arg1 = parser.arg1()
-			arg2 = parser.arg2()
 			codeWriter.writePushPop(commandType, arg1, arg2)
 		elseif commandType = "C_LABEL"
-			arg1 = parser.arg1()
 			codeWriter.writeLabel(arg1)
 		elseif commandType = "C_GOTO"
-			arg1 = parser.arg1()
 			codeWriter.writeGoto(arg1)
 		elseif commandType = "C_IF"
-			arg1 = parser.arg1()
 			codeWriter.writeIf(arg1)
+		elseif commandType = "C_FUNCTION"
+			codeWriter.writeFunction(arg1,arg2)
+		elseif commandType = "C_CALL"
+			codeWriter.writeCall(arg1, arg2)
+		elseif commandType = "C_RETURN"
+			codeWriter.writeReturn()
 		end
 	end
 	?"translation successed!"

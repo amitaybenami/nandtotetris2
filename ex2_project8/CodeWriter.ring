@@ -6,6 +6,9 @@ class CodeWriter
 	func setFileName _filename
 		//inform the codeWriter about new file reading
 		filename = left(_filename,len(_filename)-3)//without .vm extension
+		main_compares = 0
+		main_returns = 0
+		funcEnd()
 
 	func writeArithmetic command
 	//writes assembly for given arithmetic command in output file
@@ -21,7 +24,7 @@ class CodeWriter
 			elseif command = "and" fwrite(outputfile, "M=D&M" + nl)
 			elseif command = "or" fwrite(outputfile, "M=D|M" + nl)
 			elseif command = "eq" or command = "gt" or command = "lt"
-				jumpOperation(command)
+				cmpOperation(command)
 			end
 		elseif command = "not" 
 			fwrite(outputfile, "A=M-1" + nl)
@@ -100,25 +103,113 @@ class CodeWriter
 	end
 
 	func writeLabel label //writes assembly for a label command
-		fwrite(outputfile, "(" + filename + "." + label + ")" + nl)
+		fwrite(outputfile, "(" + currentFunc + "$" + label + ")" + nl)
 
 	func writeGoto label //writes assembly for a goto command
-		fwrite(outputfile, "@" + filename + "." + label + nl)
+		fwrite(outputfile, "@" + currentFunc + "$" + label + nl)
 		fwrite(outputfile, "0;JMP" + nl)
 	
 	func writeIf label //writes assembly for a if-goto command
 		popToD()
-		fwrite(outputfile, "@" + filename + "." + label + nl)
+		fwrite(outputfile, "@" + currentFunc + "$" + label + nl)
 		fwrite(outputfile, "D;JNE" + nl)
 
-	func writeFunction functionName, nVars
+	func writeFunction functionName, nVars //writes assembly for a function command
+		newFunc(functionName)
+		fwrite(outputfile, "(" + currentFunc + ")" + nl)
+
+		//push nVars 0's to stack:
+		if nVars > 0
+			fwrite(outputfile, "@SP" + nl)
+			for i = 1 to nVars
+				fwrite(outputfile, "M=M+1" + nl)
+			end
+			fwrite(outputfile, "A=M" + nl)
+			for i = 1 to nVars
+				fwrite(outputfile, "A=A-1" + nl)
+				fwrite(outputfile, "M=0" + nl)
+			end
+		end
+
+	func writeCall functionName, nVars //writes assembly for a call command
+		pushFromMemory(currentFunc + "$ret." + returns)
+		pushFromMemory("LCL")
+		pushFromMemory("ARG")
+		pushFromMemory("THIS")
+		pushFromMemory("THAT")
 		
+		//update LCL and ARG:
+		fwrite(outputfile, "@SP" + nl)
+		fwrite(outputfile, "D=M" + nl)
+		fwrite(outputfile, "@LCL" + nl)
+		fwrite(outputfile, "M=D" + nl)
+		fwrite(outputfile, "@" + (nVars + 5) + nl)
+		fwrite(outputfile, "D=D-A" + nl)
+		fwrite(outputfile, "@ARG" + nl)
+		fwrite(outputfile, "M=D" + nl)
+	
+		fwrite(outputfile, "@" + filename + "." + functionName + nl)
+		fwrite(outputfile, "0;JMP" + nl)
+		fwrite(outputfile, "(" + currentFunc + "$ret." + returns + ")" + nl)
+		returns ++
+		
+	func writeReturn //writes assembly for a return command
+		//save LCL as temp
+		fwrite(outputfile, "@LCL" + nl)
+		fwrite(outputfile, "D=M" + nl)
+		fwrite(outputfile, "@5" + nl)
+		fwrite(outputfile, "M=D" + nl)
+		//save ret as temp
+		fwrite(outputfile, "A=D-A" + nl)
+		fwrite(outputfile, "D=M" + nl)
+		fwrite(outputfile, "@6" + nl)
+		fwrite(outputfile, "M=D" + nl)
+		//put return value in head of stack
+		popToD() 
+		fwrite(outputfile, "@ARG" + nl)
+		fwrite(outputfile, "A=M" + nl)
+		fwrite(outputfile, "M=D" + nl)
+		//reset SP for caller
+		fwrite(outputfile, "@ARG" + nl)
+		fwrite(outputfile, "D=A+1" + nl)
+		fwrite(outputfile, "@SP" + nl)
+		fwrite(outputfile, "M=D" + nl)
+		//reset THAT for caller
+		fwrite(outputfile, "@5" + nl)
+		fwrite(outputfile, "A=M-1" + nl)
+		fwrite(outputfile, "D=M" + nl)
+		fwrite(outputfile, "@THAT" + nl)
+		fwrite(outputfile, "M=D" + nl)
+		//reset THIS for caller
+		fwrite(outputfile, "@5" + nl)
+		fwrite(outputfile, "A=M-1" + nl)
+		fwrite(outputfile, "A=A-1" + nl)
+		fwrite(outputfile, "D=M" + nl)
+		fwrite(outputfile, "@THIS" + nl)
+		fwrite(outputfile, "M=D" + nl)
+		//reset ARG for caller
+		fwrite(outputfile, "@5" + nl)
+		fwrite(outputfile, "D=M" + nl)
+		fwrite(outputfile, "@3" + nl)
+		fwrite(outputfile, "A=D-A" + nl)
+		fwrite(outputfile, "D=M" + nl)
+		fwrite(outputfile, "@ARG" + nl)
+		fwrite(outputfile, "M=D" + nl)
+		//reset LCL for caller
+		fwrite(outputfile, "@5" + nl)
+		fwrite(outputfile, "D=M" + nl)
+		fwrite(outputfile, "@4" + nl)
+		fwrite(outputfile, "A=D-A" + nl)
+		fwrite(outputfile, "D=M" + nl)
+		fwrite(outputfile, "@LCL" + nl)
+		fwrite(outputfile, "M=D" + nl)
+		//jump to ret
+		fwrite(outputfile, "@6" + nl)	
+		fwrite(outputfile, "A=M" + nl)
+		fwrite(outputfile, "0;JMP" +nl)
 
-	func writeCall functionName, nVars
-
-
-	func writeReturn 
-
+		funcEnd()
+		
 	
 	func close //closes the output file
 		fclose(outputfile)
@@ -126,13 +217,29 @@ class CodeWriter
 	private
 	
 	outputfile
-	jumps = 0
-	filename			
+	compares = 0
+	returns = 0
+	main_compares = 0
+	main_returns = 0
+	filename	
+	currentFunc		
 
 	func popToD //pops the topmost stack element to D
 		fwrite(outputfile, "@SP" + nl)
 		fwrite(outputfile, "AM=M-1" + nl)
 		fwrite(outputfile, "D=M" + nl)
+	
+	func newFunc functionName //reset counters on function start
+		currentFunc = filename + "." + functionName
+		main_compares = compares
+		main_returns = returns	
+		compares = 0
+		returns = 0
+
+	func funcEnd //reset counters on function end
+		currentFunc = filename
+		compares = main_compares
+		returns = main_returns
 	
 	func pushD //pushes D to the top of the stack
 		fwrite(outputfile, "@SP" + nl)
@@ -141,20 +248,25 @@ class CodeWriter
 		fwrite(outputfile, "@SP" + nl)
 		fwrite(outputfile, "M=M+1" + nl)
 
-	func jumpOperation command
+	func pushFromMemory label//pushes from memory to stack
+		fwrite(outputfile, "@" + label + nl)
+		fwrite(outputfile, "D=M" + nl)
+		pushD()
+
+	func cmpOperation command
 		fwrite(outputfile, "D=M-D" + nl)
-		fwrite(outputfile, "@TRUE" + jumps + nl)
+		fwrite(outputfile, "@" + currentFunc + "$true." + compares + nl)
 		fwrite(outputfile, "D;J" + upper(command) + nl)
 		fwrite(outputfile, "@SP" + nl)
 		fwrite(outputfile, "A=M-1" + nl)
 		fwrite(outputfile, "M=0" + nl)
-		fwrite(outputfile, "@CONTINUE" + jumps + nl)
+		fwrite(outputfile, "@" + currentFunc + "$continue." + compares + nl)
 		fwrite(outputfile, "0;JMP" + nl)
-		fwrite(outputfile, "(TRUE" + jumps + ")" + nl)
+		fwrite(outputfile, "(" + currentFunc + "$true." + compares + ")" + nl)
 		fwrite(outputfile, "@SP" + nl)
 		fwrite(outputfile, "A=M-1" + nl)
 		fwrite(outputfile, "M=-1" + nl)
-		fwrite(outputfile, "(CONTINUE" + jumps + ")" + nl)
+		fwrite(outputfile, "(" + currentFunc + "$continue." + compares + ")" + nl)
 
-		jumps++
+		compares++
 		
