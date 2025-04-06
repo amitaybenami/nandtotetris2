@@ -12,9 +12,9 @@ class CodeWriter
 		fwrite(outputfile, "//" + command + nl)	
 		fwrite(outputfile, "@SP" + nl)
 		if command = "add" or command = "sub" or command = "eq" or command = "gt"
-			or command = "lt" or command = "and" or command = "or"//two operands
+		or command = "lt" or command = "and" or command = "or"//two operands
 			fwrite(outputfile, "AM=M-1" + nl)		
-			fwrite(outputfile, "D=M" + nl)
+			fwrite(outputfile, "D=M" + nl)//pop
 			fwrite(outputfile, "A=A-1" + nl)
 			if command = "add" fwrite(outputfile, "M=D+M" + nl)
 			elseif command = "sub" fwrite(outputfile, "M=M-D" + nl)
@@ -99,6 +99,27 @@ class CodeWriter
 		pushD() 
 	end
 
+	func writeLabel label //writes assembly for a label command
+		fwrite("(" + filename + "." + label + ")" + nl)
+
+	func writeGoto label //writes assembly for a goto command
+		fwrite("@" + filename + "." + label + nl)
+		fwrite("0;JMP" + nl)
+	
+	func writeIf label //writes assembly for a if-goto command
+		popToD()
+		fwrite("@" + filename + "." + label + nl)
+		fwrite("D;JNE" + nl)
+
+	func writeFunction functionName, nVars
+		
+
+	func writeCall functionName, nVars
+
+
+	func writeReturn 
+
+	
 	func close //closes the output file
 		fclose(outputfile)
 
@@ -108,12 +129,12 @@ class CodeWriter
 	jumps = 0
 	filename			
 
-	func popToD
-	fwrite(outputfile, "@SP" + nl)
-	fwrite(outputfile, "AM=M-1" + nl)
-	fwrite(outputfile, "D=M" + nl)
-
-	func pushD
+	func popToD //pops the topmost stack element to D
+		fwrite(outputfile, "@SP" + nl)
+		fwrite(outputfile, "AM=M-1" + nl)
+		fwrite(outputfile, "D=M" + nl)
+	
+	func pushD //pushes D to the top of the stack
 		fwrite(outputfile, "@SP" + nl)
 		fwrite(outputfile, "A=M" + nl)
 		fwrite(outputfile, "M=D" + nl)
