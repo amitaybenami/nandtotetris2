@@ -1,0 +1,1052 @@
+function Snake.new 0
+push constant 3
+call Memory.alloc 1
+pop pointer 0
+push constant 15
+pop this 0
+push constant 7
+pop this 1
+push constant 15
+push constant 7
+push constant 2
+call Snake.draw 3
+pop temp 0
+push constant 14
+push constant 7
+push constant 5
+call Snake.draw 3
+pop temp 0
+push constant 13
+push constant 7
+push constant 5
+call Snake.draw 3
+pop temp 0
+call RingList.new 0
+pop this 2
+push pointer 0
+return
+function Snake.move 6
+push argument 0
+pop pointer 0
+push this 0
+pop local 3
+push this 1
+pop local 4
+push argument 1
+push constant 1
+eq
+if-goto IF_TRUE0
+goto IF_FALSE0
+label IF_TRUE0
+push this 1
+push constant 1
+sub
+pop this 1
+label IF_FALSE0
+push argument 1
+push constant 2
+eq
+if-goto IF_TRUE1
+goto IF_FALSE1
+label IF_TRUE1
+push this 0
+push constant 1
+add
+pop this 0
+label IF_FALSE1
+push argument 1
+push constant 3
+eq
+if-goto IF_TRUE2
+goto IF_FALSE2
+label IF_TRUE2
+push this 1
+push constant 1
+add
+pop this 1
+label IF_FALSE2
+push argument 1
+push constant 4
+eq
+if-goto IF_TRUE3
+goto IF_FALSE3
+label IF_TRUE3
+push this 0
+push constant 1
+sub
+pop this 0
+label IF_FALSE3
+push this 0
+push constant 29
+gt
+push this 0
+push constant 0
+lt
+or
+push this 1
+push constant 12
+gt
+or
+push this 1
+push constant 0
+lt
+or
+push this 2
+push this 0
+push this 1
+call RingList.check 3
+not
+or
+if-goto IF_TRUE4
+goto IF_FALSE4
+label IF_TRUE4
+push constant 0
+return
+label IF_FALSE4
+push this 0
+push argument 2
+eq
+push this 1
+push argument 3
+eq
+and
+pop local 5
+push this 2
+call RingList.getLast 1
+pop local 0
+push local 0
+push constant 30
+call Math.divide 2
+pop local 2
+push local 0
+push local 2
+push constant 30
+call Math.multiply 2
+sub
+pop local 1
+push local 1
+push local 2
+push constant 0
+call Snake.draw 3
+pop temp 0
+push local 3
+push local 4
+push constant 5
+call Snake.draw 3
+pop temp 0
+push this 2
+push local 4
+push constant 30
+call Math.multiply 2
+push local 3
+add
+push local 5
+call RingList.move 3
+pop temp 0
+push this 0
+push this 1
+push argument 1
+call Snake.draw 3
+pop temp 0
+push local 5
+if-goto IF_TRUE5
+goto IF_FALSE5
+label IF_TRUE5
+push constant 2
+return
+label IF_FALSE5
+push constant 1
+return
+function Snake.draw 1
+push constant 1
+push argument 0
+add
+push argument 1
+push constant 1
+add
+push constant 512
+call Math.multiply 2
+add
+pop local 0
+push argument 2
+push constant 0
+eq
+if-goto IF_TRUE0
+goto IF_FALSE0
+label IF_TRUE0
+push local 0
+call Snake.clear 1
+pop temp 0
+label IF_FALSE0
+push argument 2
+push constant 1
+eq
+if-goto IF_TRUE1
+goto IF_FALSE1
+label IF_TRUE1
+push local 0
+call Snake.drawUp 1
+pop temp 0
+label IF_FALSE1
+push argument 2
+push constant 2
+eq
+if-goto IF_TRUE2
+goto IF_FALSE2
+label IF_TRUE2
+push local 0
+call Snake.drawRight 1
+pop temp 0
+label IF_FALSE2
+push argument 2
+push constant 3
+eq
+if-goto IF_TRUE3
+goto IF_FALSE3
+label IF_TRUE3
+push local 0
+call Snake.drawDown 1
+pop temp 0
+label IF_FALSE3
+push argument 2
+push constant 4
+eq
+if-goto IF_TRUE4
+goto IF_FALSE4
+label IF_TRUE4
+push local 0
+call Snake.drawLeft 1
+pop temp 0
+label IF_FALSE4
+push argument 2
+push constant 5
+eq
+if-goto IF_TRUE5
+goto IF_FALSE5
+label IF_TRUE5
+push local 0
+call Snake.drawRing 1
+pop temp 0
+label IF_FALSE5
+push argument 2
+push constant 6
+eq
+if-goto IF_TRUE6
+goto IF_FALSE6
+label IF_TRUE6
+push local 0
+call Snake.drawApple 1
+pop temp 0
+label IF_FALSE6
+push constant 0
+return
+function Snake.check 0
+push argument 0
+pop pointer 0
+push this 0
+push argument 1
+eq
+not
+push this 1
+push argument 2
+eq
+not
+and
+push this 2
+push argument 1
+push argument 2
+call RingList.check 3
+and
+return
+function Snake.clearBoard 0
+push constant 0
+call Screen.setColor 1
+pop temp 0
+push constant 16
+push constant 16
+push constant 495
+push constant 223
+call Screen.drawRectangle 4
+pop temp 0
+push constant 0
+return
+function Snake.drawUp 0
+push constant 16384
+push argument 0
+add
+pop static 0
+push static 0
+push constant 0
+add
+push constant 4080
+call Memory.poke 2
+pop temp 0
+push static 0
+push constant 32
+add
+push constant 8184
+call Memory.poke 2
+pop temp 0
+push static 0
+push constant 64
+add
+push constant 16380
+call Memory.poke 2
+pop temp 0
+push static 0
+push constant 96
+add
+push constant 31134
+call Memory.poke 2
+pop temp 0
+push static 0
+push constant 128
+add
+push constant 1633
+neg
+call Memory.poke 2
+pop temp 0
+push static 0
+push constant 160
+add
+push constant 1633
+neg
+call Memory.poke 2
+pop temp 0
+push static 0
+push constant 192
+add
+push constant 1
+neg
+call Memory.poke 2
+pop temp 0
+push static 0
+push constant 224
+add
+push constant 1
+neg
+call Memory.poke 2
+pop temp 0
+push static 0
+push constant 256
+add
+push constant 1
+neg
+call Memory.poke 2
+pop temp 0
+push static 0
+push constant 288
+add
+push constant 1
+neg
+call Memory.poke 2
+pop temp 0
+push static 0
+push constant 320
+add
+push constant 1
+neg
+call Memory.poke 2
+pop temp 0
+push static 0
+push constant 352
+add
+push constant 1
+neg
+call Memory.poke 2
+pop temp 0
+push static 0
+push constant 384
+add
+push constant 32766
+call Memory.poke 2
+pop temp 0
+push static 0
+push constant 416
+add
+push constant 16380
+call Memory.poke 2
+pop temp 0
+push static 0
+push constant 448
+add
+push constant 8184
+call Memory.poke 2
+pop temp 0
+push static 0
+push constant 480
+add
+push constant 3120
+call Memory.poke 2
+pop temp 0
+push constant 0
+return
+function Snake.drawRight 0
+push constant 16384
+push argument 0
+add
+pop static 0
+push static 0
+push constant 0
+add
+push constant 4080
+call Memory.poke 2
+pop temp 0
+push static 0
+push constant 32
+add
+push constant 8184
+call Memory.poke 2
+pop temp 0
+push static 0
+push constant 64
+add
+push constant 16380
+call Memory.poke 2
+pop temp 0
+push static 0
+push constant 96
+add
+push constant 32766
+call Memory.poke 2
+pop temp 0
+push static 0
+push constant 128
+add
+push constant 1
+neg
+call Memory.poke 2
+pop temp 0
+push static 0
+push constant 160
+add
+push constant 7169
+neg
+call Memory.poke 2
+pop temp 0
+push static 0
+push constant 192
+add
+push constant 7170
+neg
+call Memory.poke 2
+pop temp 0
+push static 0
+push constant 224
+add
+push constant 2
+neg
+call Memory.poke 2
+pop temp 0
+push static 0
+push constant 256
+add
+push constant 2
+neg
+call Memory.poke 2
+pop temp 0
+push static 0
+push constant 288
+add
+push constant 7170
+neg
+call Memory.poke 2
+pop temp 0
+push static 0
+push constant 320
+add
+push constant 7169
+neg
+call Memory.poke 2
+pop temp 0
+push static 0
+push constant 352
+add
+push constant 1
+neg
+call Memory.poke 2
+pop temp 0
+push static 0
+push constant 384
+add
+push constant 32766
+call Memory.poke 2
+pop temp 0
+push static 0
+push constant 416
+add
+push constant 16380
+call Memory.poke 2
+pop temp 0
+push static 0
+push constant 448
+add
+push constant 8184
+call Memory.poke 2
+pop temp 0
+push static 0
+push constant 480
+add
+push constant 4080
+call Memory.poke 2
+pop temp 0
+push constant 0
+return
+function Snake.drawDown 0
+push constant 16384
+push argument 0
+add
+pop static 0
+push static 0
+push constant 0
+add
+push constant 3120
+call Memory.poke 2
+pop temp 0
+push static 0
+push constant 32
+add
+push constant 8184
+call Memory.poke 2
+pop temp 0
+push static 0
+push constant 64
+add
+push constant 16380
+call Memory.poke 2
+pop temp 0
+push static 0
+push constant 96
+add
+push constant 32766
+call Memory.poke 2
+pop temp 0
+push static 0
+push constant 128
+add
+push constant 1
+neg
+call Memory.poke 2
+pop temp 0
+push static 0
+push constant 160
+add
+push constant 1
+neg
+call Memory.poke 2
+pop temp 0
+push static 0
+push constant 192
+add
+push constant 1
+neg
+call Memory.poke 2
+pop temp 0
+push static 0
+push constant 224
+add
+push constant 1
+neg
+call Memory.poke 2
+pop temp 0
+push static 0
+push constant 256
+add
+push constant 1
+neg
+call Memory.poke 2
+pop temp 0
+push static 0
+push constant 288
+add
+push constant 1
+neg
+call Memory.poke 2
+pop temp 0
+push static 0
+push constant 320
+add
+push constant 1633
+neg
+call Memory.poke 2
+pop temp 0
+push static 0
+push constant 352
+add
+push constant 1633
+neg
+call Memory.poke 2
+pop temp 0
+push static 0
+push constant 384
+add
+push constant 31134
+call Memory.poke 2
+pop temp 0
+push static 0
+push constant 416
+add
+push constant 16380
+call Memory.poke 2
+pop temp 0
+push static 0
+push constant 448
+add
+push constant 8184
+call Memory.poke 2
+pop temp 0
+push static 0
+push constant 480
+add
+push constant 4080
+call Memory.poke 2
+pop temp 0
+push constant 0
+return
+function Snake.drawLeft 0
+push constant 16384
+push argument 0
+add
+pop static 0
+push static 0
+push constant 0
+add
+push constant 3120
+call Memory.poke 2
+pop temp 0
+push static 0
+push constant 32
+add
+push constant 8184
+call Memory.poke 2
+pop temp 0
+push static 0
+push constant 64
+add
+push constant 16380
+call Memory.poke 2
+pop temp 0
+push static 0
+push constant 96
+add
+push constant 32766
+call Memory.poke 2
+pop temp 0
+push static 0
+push constant 128
+add
+push constant 1
+neg
+call Memory.poke 2
+pop temp 0
+push static 0
+push constant 160
+add
+push constant 1
+neg
+call Memory.poke 2
+pop temp 0
+push static 0
+push constant 192
+add
+push constant 1
+neg
+call Memory.poke 2
+pop temp 0
+push static 0
+push constant 224
+add
+push constant 1
+neg
+call Memory.poke 2
+pop temp 0
+push static 0
+push constant 256
+add
+push constant 1
+neg
+call Memory.poke 2
+pop temp 0
+push static 0
+push constant 288
+add
+push constant 1
+neg
+call Memory.poke 2
+pop temp 0
+push static 0
+push constant 320
+add
+push constant 1633
+neg
+call Memory.poke 2
+pop temp 0
+push static 0
+push constant 352
+add
+push constant 1633
+neg
+call Memory.poke 2
+pop temp 0
+push static 0
+push constant 384
+add
+push constant 31134
+call Memory.poke 2
+pop temp 0
+push static 0
+push constant 416
+add
+push constant 16380
+call Memory.poke 2
+pop temp 0
+push static 0
+push constant 448
+add
+push constant 8184
+call Memory.poke 2
+pop temp 0
+push static 0
+push constant 480
+add
+push constant 4080
+call Memory.poke 2
+pop temp 0
+push constant 0
+return
+function Snake.drawRing 0
+push constant 16384
+push argument 0
+add
+pop static 0
+push static 0
+push constant 0
+add
+push constant 4080
+call Memory.poke 2
+pop temp 0
+push static 0
+push constant 32
+add
+push constant 8184
+call Memory.poke 2
+pop temp 0
+push static 0
+push constant 64
+add
+push constant 12300
+call Memory.poke 2
+pop temp 0
+push static 0
+push constant 96
+add
+push constant 24582
+call Memory.poke 2
+pop temp 0
+push static 0
+push constant 128
+add
+push constant 16381
+neg
+call Memory.poke 2
+pop temp 0
+push static 0
+push constant 160
+add
+push constant 16381
+neg
+call Memory.poke 2
+pop temp 0
+push static 0
+push constant 192
+add
+push constant 16381
+neg
+call Memory.poke 2
+pop temp 0
+push static 0
+push constant 224
+add
+push constant 16381
+neg
+call Memory.poke 2
+pop temp 0
+push static 0
+push constant 256
+add
+push constant 16381
+neg
+call Memory.poke 2
+pop temp 0
+push static 0
+push constant 288
+add
+push constant 16381
+neg
+call Memory.poke 2
+pop temp 0
+push static 0
+push constant 320
+add
+push constant 16381
+neg
+call Memory.poke 2
+pop temp 0
+push static 0
+push constant 352
+add
+push constant 16381
+neg
+call Memory.poke 2
+pop temp 0
+push static 0
+push constant 384
+add
+push constant 24582
+call Memory.poke 2
+pop temp 0
+push static 0
+push constant 416
+add
+push constant 12300
+call Memory.poke 2
+pop temp 0
+push static 0
+push constant 448
+add
+push constant 8184
+call Memory.poke 2
+pop temp 0
+push static 0
+push constant 480
+add
+push constant 4080
+call Memory.poke 2
+pop temp 0
+push constant 0
+return
+function Snake.drawApple 0
+push constant 16384
+push argument 0
+add
+pop static 0
+push static 0
+push constant 0
+add
+push constant 4080
+call Memory.poke 2
+pop temp 0
+push static 0
+push constant 32
+add
+push constant 8184
+call Memory.poke 2
+pop temp 0
+push static 0
+push constant 64
+add
+push constant 16380
+call Memory.poke 2
+pop temp 0
+push static 0
+push constant 96
+add
+push constant 32766
+call Memory.poke 2
+pop temp 0
+push static 0
+push constant 128
+add
+push constant 1
+neg
+call Memory.poke 2
+pop temp 0
+push static 0
+push constant 160
+add
+push constant 1
+neg
+call Memory.poke 2
+pop temp 0
+push static 0
+push constant 192
+add
+push constant 1
+neg
+call Memory.poke 2
+pop temp 0
+push static 0
+push constant 224
+add
+push constant 1
+neg
+call Memory.poke 2
+pop temp 0
+push static 0
+push constant 256
+add
+push constant 1
+neg
+call Memory.poke 2
+pop temp 0
+push static 0
+push constant 288
+add
+push constant 1
+neg
+call Memory.poke 2
+pop temp 0
+push static 0
+push constant 320
+add
+push constant 1
+neg
+call Memory.poke 2
+pop temp 0
+push static 0
+push constant 352
+add
+push constant 1
+neg
+call Memory.poke 2
+pop temp 0
+push static 0
+push constant 384
+add
+push constant 32766
+call Memory.poke 2
+pop temp 0
+push static 0
+push constant 416
+add
+push constant 16380
+call Memory.poke 2
+pop temp 0
+push static 0
+push constant 448
+add
+push constant 8184
+call Memory.poke 2
+pop temp 0
+push static 0
+push constant 480
+add
+push constant 3120
+call Memory.poke 2
+pop temp 0
+push constant 0
+return
+function Snake.clear 0
+push constant 16384
+push argument 0
+add
+pop static 0
+push static 0
+push constant 0
+add
+push constant 0
+call Memory.poke 2
+pop temp 0
+push static 0
+push constant 32
+add
+push constant 0
+call Memory.poke 2
+pop temp 0
+push static 0
+push constant 64
+add
+push constant 0
+call Memory.poke 2
+pop temp 0
+push static 0
+push constant 96
+add
+push constant 0
+call Memory.poke 2
+pop temp 0
+push static 0
+push constant 128
+add
+push constant 0
+call Memory.poke 2
+pop temp 0
+push static 0
+push constant 160
+add
+push constant 0
+call Memory.poke 2
+pop temp 0
+push static 0
+push constant 192
+add
+push constant 0
+call Memory.poke 2
+pop temp 0
+push static 0
+push constant 224
+add
+push constant 0
+call Memory.poke 2
+pop temp 0
+push static 0
+push constant 256
+add
+push constant 0
+call Memory.poke 2
+pop temp 0
+push static 0
+push constant 288
+add
+push constant 0
+call Memory.poke 2
+pop temp 0
+push static 0
+push constant 320
+add
+push constant 0
+call Memory.poke 2
+pop temp 0
+push static 0
+push constant 352
+add
+push constant 0
+call Memory.poke 2
+pop temp 0
+push static 0
+push constant 384
+add
+push constant 0
+call Memory.poke 2
+pop temp 0
+push static 0
+push constant 416
+add
+push constant 0
+call Memory.poke 2
+pop temp 0
+push static 0
+push constant 448
+add
+push constant 0
+call Memory.poke 2
+pop temp 0
+push static 0
+push constant 480
+add
+push constant 0
+call Memory.poke 2
+pop temp 0
+push constant 0
+return
+function Snake.dispose 0
+push argument 0
+pop pointer 0
+push this 2
+call RingList.dispose 1
+pop temp 0
+push pointer 0
+call Memory.deAlloc 1
+pop temp 0
+push constant 0
+return
