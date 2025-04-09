@@ -1,0 +1,93 @@
+class RingList {
+    field Array items;      // Stores positions of snake body parts
+    field int length;       // Number of body segments
+    field int capacity;     // Current max size of items array
+
+    constructor RingList new() {
+        let capacity = 16;
+        let items = Array.new(capacity);
+        let items[0] = 224;   // Initial body position (head)
+        let items[1] = 223;   // Initial body position (next segment)
+        let length = 2;
+        return this;
+    }
+
+    /** Moves the snake's body, optionally grows if it ate */
+    method void move(int val, boolean eat) {
+        var int i;
+
+        // Resize array if needed
+        if (eat & (length = capacity)) {
+            do resize();
+        }
+
+        // Determine how many elements to shift
+        if (eat) {
+            let i = length;
+        } else {
+            let i = length - 1;
+        }
+
+        // Shift all body parts one index forward
+        while (i > 0) {
+            let items[i] = items[i - 1];
+            let i = i - 1;
+        }
+
+        // Insert new head at position 0
+        let items[0] = val;
+
+        // Increase length if apple was eaten
+        if (eat) {
+            let length = length + 1;
+        }
+        return;
+    }
+
+    /** Doubles the internal array size */
+    method void resize() {
+        var Array newItems;
+        var int newCapacity, i;
+
+        let newCapacity = capacity * 2;
+        let newItems = Array.new(newCapacity);
+
+        let i = 0;
+        while (i < length) {
+            let newItems[i] = items[i];
+            let i = i + 1;
+        }
+
+        do items.dispose();
+        let items = newItems;
+        let capacity = newCapacity;
+        return;
+    }
+
+    /** Returns the last body segment's position */
+    method int getLast() {
+        return items[length - 1];
+    }
+
+    /** Returns true if (x, y) is not part of the body */
+    method boolean check(int x, int y) {
+        var int location, i;
+        let location = x + (y * 30);
+
+        let i = 0;
+        while (i < length) {
+            if (location = items[i]) {
+                return false;
+            }
+            let i = i + 1;
+        }
+        return true;
+    }
+
+    /** Frees memory used by this RingList */
+    method void dispose() {
+        do items.dispose();
+        do Memory.deAlloc(this);
+        return;
+    }
+}

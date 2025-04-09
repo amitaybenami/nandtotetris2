@@ -1,0 +1,203 @@
+class Game {
+    field Snake snake;
+    field int appleX, appleY, score;
+    field int direction; // Current snake direction
+    static int randomSeed;
+
+    /** Constructor: Draws border and initializes snake */
+    constructor Game new() {
+        do Screen.drawRectangle(0,0,511,15);     // Top border
+        do Screen.drawRectangle(0,224,511,240);  // Bottom border
+        do Screen.drawRectangle(0,15,15,223);    // Left border
+        do Screen.drawRectangle(496,15,511,223); // Right border
+
+        let randomSeed = 1234;
+        let snake = Snake.new();
+        return this;
+    }
+
+    /** Main menu loop: Starts the game, handles restart or exit */
+    method void run() {
+		var char key;
+        do play();
+        while (true) {
+            while ((~(key = 32)) & (~(key = 140))) {
+                let key = Keyboard.keyPressed();
+                do Sys.wait(1);
+            }
+            if (key = 32) {
+				// Wait until key is released
+				while (key = 32) {
+					let key = Keyboard.keyPressed();
+					do Sys.wait(1);
+				}
+                do Snake.clearBoard();
+                let snake = Snake.new();
+                do play();
+				let key = 0;
+            } else {
+                do Snake.clearBoard();
+                do Output.moveCursor(22, 0);
+                do Output.printString("----------------------------GoodBye!----------------------------");
+                return;
+            }
+        }
+        return;
+    }
+
+    /** Handles actual game loop, input, and scoring */
+    method void play() {
+        var boolean started;
+		var char key;
+        var int i, nextDirection, result, speed;
+
+        let started = false;
+        let direction = 2;       // Initial direction: right
+        let nextDirection = 2;
+        let speed = 600;         // Initial speed
+        let score = 0;
+
+        // --- Wait for SPACE to begin ---
+        if (~started) {
+            do Output.moveCursor(22, 0);            
+            do Output.printString("Press SPACE to start...                                         ");
+            do pause();
+            let started = true;
+            do spawnApple();
+        }
+
+        // --- Main game loop ---
+        while (true) {
+            let key = Keyboard.keyPressed();
+            
+            // Pause game on SPACE
+            if (key = 32) {
+                do Output.moveCursor(22, 10);
+                do Output.printString("Paused. Press SPACE to resume...");
+				// Wait until key is released
+				while (key = 32) {
+					let key = Keyboard.keyPressed();
+					do Sys.wait(1);
+				}
+                do pause();
+            }
+
+            // --- Direction polling loop (also controls movement speed) ---
+            let i = 0;
+            while (i < speed) {
+                let key = Keyboard.keyPressed();
+
+                // Arrow keys: update direction (1=up, 2=right, 3=down, 4=left)
+                if (key = 131) {
+                    if (~(direction = 3)) { let nextDirection = 1; }
+                }
+                if (key = 132) {
+                    if (~(direction = 4)) { let nextDirection = 2; }
+                }
+                if (key = 133) {
+                    if (~(direction = 1)) { let nextDirection = 3; }
+                }
+                if (key = 130) {
+                    if (~(direction = 2)) { let nextDirection = 4; }
+                }
+
+                do Sys.wait(1);
+                let i = i + 1;
+            }
+
+            let direction = nextDirection;
+
+            // Move the snake and get result
+            let result = snake.move(direction, appleX, appleY);
+
+            if (result = 0) {
+                // --- Game Over ---
+                do Output.moveCursor(22, 0);
+                do Output.printString("Game Over! Score: ");
+                do Output.printInt(score);
+                do Output.printString("  Press SPACE to restart or Esc for exit");
+
+                do snake.dispose();
+                return;
+            }
+
+            if (result = 2) {
+                // --- Apple eaten ---
+                let score = score + 1;
+
+                // Speed up every 2 apples, min speed 400
+                if (speed > 400 & Game.modulu(score, 2) = 0) {
+                    let speed = speed - 25;
+                }
+
+                do Output.moveCursor(22, 7);
+                do Output.printInt(score);
+                do spawnApple();
+            }
+        }
+        return;
+    }
+
+    /** Pauses the game until SPACE is pressed again */
+    method void pause() {
+		var char key;
+        while (~(key = 32)) {
+            let key = Keyboard.keyPressed();
+            do Sys.wait(1);
+        }
+		
+		// Wait until key is released
+		while (key = 32) {
+			let key = Keyboard.keyPressed();
+			do Sys.wait(1);
+		}
+        do Output.moveCursor(22, 0);
+        do Output.printString("Score: ");
+        do Output.printInt(score);
+        do Output.printString("                                                    ");
+        return;
+    }
+
+    /** Returns a pseudo-random number using linear congruential generator */
+    function int nextRandom() {
+        let randomSeed = ((randomSeed * 109) + 89) & 32767;
+        return randomSeed;
+    }
+
+    /** Spawns an apple in a random free location */
+    method void spawnApple() {
+        var int tries, loc, r;
+        let tries = 0;
+
+        while (tries < 1000) {
+            let r = Game.nextRandom();
+            let loc = Game.modulu(r, 390); // Field: 13 rows * 30 columns
+            let appleY = loc / 30;
+            let appleX = loc - (appleY * 30);
+
+            // Ensure apple is not placed on the snake
+            if (snake.check(appleX, appleY)) {
+                do Snake.draw(appleX, appleY, 6); 
+                return;
+            }
+
+            let tries = tries + 1;
+        }
+
+        // Fallback message if no spot found
+        do Output.moveCursor(22, 0);
+        do Output.printString("Couldn't spawn an apple");
+        return;
+    }
+
+    /** Modulo function: returns a % b */
+    function int modulu(int a, int b) {
+        return (a - ((a / b) * b));
+    }
+
+    /** Frees memory used by Game object */
+    method void dispose() {
+        do Memory.deAlloc(this);
+        return;
+    }
+}

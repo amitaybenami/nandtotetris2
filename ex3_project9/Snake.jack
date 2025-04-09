@@ -1,0 +1,239 @@
+class Snake {
+    field int x; // Head x position
+    field int y; // Head y position
+    field RingList ringList; // Holds snake's body positions
+    static int memAddress; // Memory location for drawing
+
+    constructor Snake new() {
+        // Initial position of snake's head and body
+        let x = 15;
+        let y = 7;
+        do Snake.draw(15, 7, 2); // Head facing right
+        do Snake.draw(14, 7, 5); // Body
+        do Snake.draw(13, 7, 5); // Body
+
+        let ringList = RingList.new();
+        return this;
+    }
+
+    /** Moves the snake in a given direction
+     * Returns: 0 if crashed, 1 if successful, 2 if apple eaten
+     */
+    method int move(int direction, int appleX, int appleY) {
+        var int last, lastX, lastY, previousX, previousY;
+        var boolean eat;
+        let previousX = x;
+        let previousY = y;
+
+        // Update head coordinates
+        if (direction = 1) { let y = y - 1; } // Up
+        if (direction = 2) { let x = x + 1; } // Right
+        if (direction = 3) { let y = y + 1; } // Down
+        if (direction = 4) { let x = x - 1; } // Left
+
+        // Collision check with wall or self
+        if (((((x > 29) | (x < 0)) | (y > 12)) | (y < 0)) | ~ringList.check(x, y)) {
+            return 0;
+        }
+
+        // Check for apple
+        let eat = (x = appleX) & (y = appleY);
+
+        // Erase tail if not eating
+        let last = ringList.getLast();
+        let lastY = last / 30;
+        let lastX = last - (lastY * 30);
+        do Snake.draw(lastX, lastY, 0);
+
+        // Move body and draw
+        do Snake.draw(previousX, previousY, 5); // Body segment
+        do ringList.move((previousY * 30) + previousX, eat);
+        do Snake.draw(x, y, direction); // New head
+
+        if (eat) { return 2; }
+        return 1;
+    }
+
+    /** Draws snake parts or apple on 13x30 board */
+    function void draw(int xIndex, int yIndex, int command) {
+        var int location;
+        let location = (1 + xIndex) + ((yIndex + 1) * 512);
+
+        if (command = 0) { do Snake.clear(location); }     // Clear
+        if (command = 1) { do Snake.drawUp(location); }    // Head up
+        if (command = 2) { do Snake.drawRight(location); } // Head right
+        if (command = 3) { do Snake.drawDown(location); }  // Head down
+        if (command = 4) { do Snake.drawLeft(location); }  // Head left
+        if (command = 5) { do Snake.drawRing(location); }  // Body
+        if (command = 6) { do Snake.drawApple(location); } // Apple
+        return;
+    }
+
+    /** Returns true if (x,y) is not part of the snake */
+    method boolean check(int _x, int _y) {
+        return (~(x = _x) & ~(y = _y) & ringList.check(_x, _y));
+    }
+
+    /** Clears the entire game board area */
+    function void clearBoard() {
+        do Screen.setColor(false);
+        do Screen.drawRectangle(16, 16, 495, 223);
+        return;
+    }
+
+    // The following functions poke pixels for rendering each shape
+	function void drawUp(int location) {
+		let memAddress = 16384+location;
+		do Memory.poke(memAddress+0, 4080);
+		do Memory.poke(memAddress+32, 8184);
+		do Memory.poke(memAddress+64, 16380);
+		do Memory.poke(memAddress+96, 31134);
+		do Memory.poke(memAddress+128, -1633);
+		do Memory.poke(memAddress+160, -1633);
+		do Memory.poke(memAddress+192, -1);
+		do Memory.poke(memAddress+224, -1);
+		do Memory.poke(memAddress+256, -1);
+		do Memory.poke(memAddress+288, -1);
+		do Memory.poke(memAddress+320, -1);
+		do Memory.poke(memAddress+352, -1);
+		do Memory.poke(memAddress+384, 32766);
+		do Memory.poke(memAddress+416, 16380);
+		do Memory.poke(memAddress+448, 8184);
+		do Memory.poke(memAddress+480, 3120);
+		return;
+	}
+	
+	function void drawRight(int location) {
+		let memAddress = 16384+location;
+		do Memory.poke(memAddress+0, 4080);
+		do Memory.poke(memAddress+32, 8184);
+		do Memory.poke(memAddress+64, 16380);
+		do Memory.poke(memAddress+96, 32766);
+		do Memory.poke(memAddress+128, -1);
+		do Memory.poke(memAddress+160, -7169);
+		do Memory.poke(memAddress+192, -7170);
+		do Memory.poke(memAddress+224, -2);
+		do Memory.poke(memAddress+256, -2);
+		do Memory.poke(memAddress+288, -7170);
+		do Memory.poke(memAddress+320, -7169);
+		do Memory.poke(memAddress+352, -1);
+		do Memory.poke(memAddress+384, 32766);
+		do Memory.poke(memAddress+416, 16380);
+		do Memory.poke(memAddress+448, 8184);
+		do Memory.poke(memAddress+480, 4080);
+		return;
+	}
+	
+	function void drawDown(int location) {
+		let memAddress = 16384+location;
+		do Memory.poke(memAddress+0, 3120);
+		do Memory.poke(memAddress+32, 8184);
+		do Memory.poke(memAddress+64, 16380);
+		do Memory.poke(memAddress+96, 32766);
+		do Memory.poke(memAddress+128, -1);
+		do Memory.poke(memAddress+160, -1);
+		do Memory.poke(memAddress+192, -1);
+		do Memory.poke(memAddress+224, -1);
+		do Memory.poke(memAddress+256, -1);
+		do Memory.poke(memAddress+288, -1);
+		do Memory.poke(memAddress+320, -1633);
+		do Memory.poke(memAddress+352, -1633);
+		do Memory.poke(memAddress+384, 31134);
+		do Memory.poke(memAddress+416, 16380);
+		do Memory.poke(memAddress+448, 8184);
+		do Memory.poke(memAddress+480, 4080);
+		return;
+	}
+	
+	function void drawLeft(int location) {
+		let memAddress = 16384+location;
+		do Memory.poke(memAddress+0, 3120);
+		do Memory.poke(memAddress+32, 8184);
+		do Memory.poke(memAddress+64, 16380);
+		do Memory.poke(memAddress+96, 32766);
+		do Memory.poke(memAddress+128, -1);
+		do Memory.poke(memAddress+160, -1);
+		do Memory.poke(memAddress+192, -1);
+		do Memory.poke(memAddress+224, -1);
+		do Memory.poke(memAddress+256, -1);
+		do Memory.poke(memAddress+288, -1);
+		do Memory.poke(memAddress+320, -1633);
+		do Memory.poke(memAddress+352, -1633);
+		do Memory.poke(memAddress+384, 31134);
+		do Memory.poke(memAddress+416, 16380);
+		do Memory.poke(memAddress+448, 8184);
+		do Memory.poke(memAddress+480, 4080);
+		return;
+	}
+
+	function void drawRing(int location) {
+		let memAddress = 16384+location;
+		do Memory.poke(memAddress+0, 4080);
+		do Memory.poke(memAddress+32, 8184);
+		do Memory.poke(memAddress+64, 12300);
+		do Memory.poke(memAddress+96, 24582);
+		do Memory.poke(memAddress+128, -16381);
+		do Memory.poke(memAddress+160, -16381);
+		do Memory.poke(memAddress+192, -16381);
+		do Memory.poke(memAddress+224, -16381);
+		do Memory.poke(memAddress+256, -16381);
+		do Memory.poke(memAddress+288, -16381);
+		do Memory.poke(memAddress+320, -16381);
+		do Memory.poke(memAddress+352, -16381);
+		do Memory.poke(memAddress+384, 24582);
+		do Memory.poke(memAddress+416, 12300);
+		do Memory.poke(memAddress+448, 8184);
+		do Memory.poke(memAddress+480, 4080);
+		return;
+	}
+	
+	function void drawApple(int location) {
+		let memAddress = 16384+location;
+		do Memory.poke(memAddress+0, 4080);
+		do Memory.poke(memAddress+32, 8184);
+		do Memory.poke(memAddress+64, 16380);
+		do Memory.poke(memAddress+96, 32766);
+		do Memory.poke(memAddress+128, -1);
+		do Memory.poke(memAddress+160, -1);
+		do Memory.poke(memAddress+192, -1);
+		do Memory.poke(memAddress+224, -1);
+		do Memory.poke(memAddress+256, -1);
+		do Memory.poke(memAddress+288, -1);
+		do Memory.poke(memAddress+320, -1);
+		do Memory.poke(memAddress+352, -1);
+		do Memory.poke(memAddress+384, 32766);
+		do Memory.poke(memAddress+416, 16380);
+		do Memory.poke(memAddress+448, 8184);
+		do Memory.poke(memAddress+480, 3120);
+		return;
+	}
+
+    /** Clears a tile at the given screen memory location */
+    function void clear(int location) {
+        let memAddress = 16384 + location;
+        do Memory.poke(memAddress+0, 0);
+        do Memory.poke(memAddress+32, 0);
+        do Memory.poke(memAddress+64, 0);
+        do Memory.poke(memAddress+96, 0);
+        do Memory.poke(memAddress+128, 0);
+        do Memory.poke(memAddress+160, 0);
+        do Memory.poke(memAddress+192, 0);
+        do Memory.poke(memAddress+224, 0);
+        do Memory.poke(memAddress+256, 0);
+        do Memory.poke(memAddress+288, 0);
+        do Memory.poke(memAddress+320, 0);
+        do Memory.poke(memAddress+352, 0);
+        do Memory.poke(memAddress+384, 0);
+        do Memory.poke(memAddress+416, 0);
+        do Memory.poke(memAddress+448, 0);
+        do Memory.poke(memAddress+480, 0);
+        return;
+    }
+
+    /** Frees memory used by the snake */
+    method void dispose() {
+        do ringList.dispose();
+        do Memory.deAlloc(this);
+        return;
+    }
+}
