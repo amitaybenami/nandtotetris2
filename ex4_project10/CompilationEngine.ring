@@ -1,8 +1,8 @@
 class CompilationEngine
 
-	func init outputfilePath
+	func init inputfilePath, outputfilePath
 		outputfile = fopen(outputfilePath, "w")
-		inputfile = fopen(inputfileParh, "r")	
+		inputfile = fopen(inputfilePath, "r")	
 		if fread(inputfile, 9) != "<tokens>" + nl
 			"CompilationError: wrong template file"
 		end
@@ -12,7 +12,7 @@ class CompilationEngine
 		eat("keyword", "class")
 		eat("identifier", -1)
 		eat("symbol", "{")
-		while check("keyword", "static") or check("keyword", "field")
+		while checkClassVarDec()
 			compileClassVarDec()
 		end
 		while not check("symbol", "}") 
@@ -20,20 +20,16 @@ class CompilationEngine
 		end
 		eat("symbol", "}")
 		ends("class")
+		fclose(inputfile)
+		fclose(outputfile)
 		
 		
 	func compileClassVarDec
 		start("classVarDec")
-		if check("keyword", "field")
-			eat("keyword", "field")
-		else eat("keyword", "static")
+		eat("keyword", -1)
 		end
-		if check("keyword", "int")
-			eat("keyword", "int")
-		elseif check("keyword", "char")
-			eat("keyword", "char")
-		elseif check("keyword", "boolean")
-			eat("keyword", "boolean")
+		if check("keyword", -1)
+			eat("keyword", -1)
 		else eat("identifier", -1)
 		end
 		eat("identifier", -1)
@@ -47,20 +43,9 @@ class CompilationEngine
 
 	func compileSubroutineDec
 		start("subroutineDec")
-		if check("keyword", "constructor")
-			eat("keyword", "constructor")
-		elseif check("keyword", "method")
-			eat("keyword", "method")
-		else eat("keyword", "function")
-		end
-		if check("keyword", "void")
-			eat("keyword", "void")	
-		elseif check("keyword", "int")
-			eat("keyword", "int")
-		elseif check("keyword", "char")
-			eat("keyword", "char")
-		elseif check("keyword", "boolean")
-			eat("keyword", "boolean")
+		eat("keyword", -1)
+		if check("keyword", -1)
+			eat("keyword", -1)	
 		else eat("identifier", -1)
 		end
 		eat("identifier", -1)
@@ -73,16 +58,15 @@ class CompilationEngine
 	func compileParameterList
 		start("parameterList")
 		if not check("symbol", ")")
-			compileType()
+			if check("keyword", -1)
+				eat("keyword", -1)	
+			else eat("identifier", -1)
+			end
 			eat("identifier", -1)
 			while check("symbol", ",")
 				eat("symbol", ",")
-				if check("keyword", "int")
-					eat("keyword", "int")
-				elseif check("keyword", "char")
-					eat("keyword", "char")
-				elseif check("keyword", "boolean")
-					eat("keyword", "boolean")
+				if check("keyword", -1)
+					eat("keyword", -1)	
 				else eat("identifier", -1)
 				end
 				eat("identifier", -1)
@@ -95,23 +79,37 @@ class CompilationEngine
 		eat("symbol", "{")
 		while check("keyword", "var")
 			compileVarDec()
-			compileStatements()
-			eat("symbol", "}")
 		end
+		compileStatements()
+		eat("symbol", "}")
 		ends("subroutineBody")
+
+	func compileVarDec 
+		start("varDec")
+		eat("keyword", "var")
+		if check("keyword", -1)
+			eat("keyword", -1)	
+		else eat("identifier", -1)
+		end
+		eat("identifier", -1)
+		while check("symbol", ",")
+			eat("symbol", ",")
+			eat("identifier", -1)
+		end
+		eat("symbol", ";")
+		ends("varDec")
 	
 	func compileStatements
 		start("statements")
-		while check("keyword", "let") or check("keyword", "if") or 
-		check("keyword", "while") or check("keyword", "do") or check("keyword", "return")
-			if token = "let"
-				compileLetSatement()
-			elseif token = "if"
-				compileIfSatement()
-			elseif token = "while"
-				compileWhileSatement()
-			elseif token = "do"
-				compileDoSatement()
+		while checkStatement()
+			if token = " let "
+				compileLetStatement()
+			elseif token = " if "
+				compileIfStatement()
+			elseif token = " while "
+				compileWhileStatement()
+			elseif token = " do "
+				compileDoStatement()
 			else
 				compileReturnStatement()
 			end
@@ -184,6 +182,61 @@ class CompilationEngine
 		eat("symbol", ";")
 		ends("returnStatement")	
 
+	func compileExpression
+		start("expression")
+		compileTerm()
+		read()
+		while checkOp()
+			eat("symbol", -1)
+			compileTerm()
+		end
+		ends("expression")
+
+	func compileTerm
+		start("term")
+		if check("integerConstant", -1)
+			eat("integerConstant", -1)
+		elseif check("stringConstant", -1)
+			eat("stringConstant", -1)
+		elseif check("keyword", -1)
+			eat("keyword", -1)
+		elseif check("identifier", -1)
+			eat("identifier", -1)
+			if check("symbol", "[")
+				eat("symbol", "[")
+				compileExpression()
+				eat("symbol", "]")
+			elseif check("symbol", "(")
+				eat("symbol", "(")
+				compileExpressionList()
+				eat("symbol", ")")
+			elseif check("symbol", ".")
+				eat("symbol", ".")
+				eat("identifier", -1)
+				eat("symbol", "(")
+				compileExpressionList()
+				eat("symbol", ")")				
+			end
+		elseif check("symbol", "(")
+				eat("symbol", "(")
+				compileExpression()
+				eat("symbol", ")")
+		else
+			eat("symbol", -1)
+			compileTerm()
+		end
+		ends("term")
+
+	func compileExpressionList
+		start("expressionList")
+		if not check("symbol", ")")
+			compileExpression()
+			while check("symbol", ",")
+				eat("symbol", ",")
+				compileExpression()
+			end
+		end
+		ends("expressionList")	
 
 	private 
 
@@ -207,30 +260,54 @@ class CompilationEngine
 		
 				
 	func check _type, _token
-		read()
-		return _type = type and (_token = token or token = -1) 
+		read()		
+		return _type = type and (" " + _token + " " = token or _token = -1) 
 	
 	func read
 		if type
 			return
 		end
 		fgetc(inputfile)
-		c = fgtc(inputfile)
+		c = fgetc(inputfile)
 		while c != ">"
 			type += c
-			c = fgtc(inputfile)
+			c = fgetc(inputfile)
 		end
-		c = fgtc(inputfile)
+		c = fgetc(inputfile)
 		while c != "<"
 			token += c
-			c = fgtc(inputfile)
+			c = fgetc(inputfile)
 		end		
 		fread(inputfile,len(type) + 3)	
 	
 	func start funcName
-		fwrite(outputfile, "<" + funcName+ ">" + nl)
+		fwrite(outputfile, indent + "<" + funcName+ ">" + nl)
 		indent += "  "
 
 	func ends funcName
 		indent = left(indent,len(indent) - 2)
 		fwrite(outputfile, indent + "</" + funcName+ ">" + nl)
+
+	func checkClassVarDec
+		read()
+		if token = " static " or token = " field "
+			return true
+		end
+		return false
+
+	func checkStatement
+		read()
+		if token = " let " or token = " do " or token = " if " or
+		token = " while " or token = " return "
+			return true
+		end
+		return false
+	
+	func checkOp
+		read()
+		if type = "symbol" and (token = " + " or token = " - " or
+		token = " * " or token = " / " or token = " &amp; " or token = " | " or
+		token = " &lt; " or token = " &gt; " or token = " = ")
+			return true
+		end
+		return false

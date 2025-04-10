@@ -1,4 +1,5 @@
 load "Tokenizer.ring"
+load "CompilationEngine.ring"
 
 func main
     	if len(sysargv) > 2
@@ -12,16 +13,53 @@ func main
 	end
 
 	filename = fileName(filePath)
+	if pathType = 1
+		dirList = [[filename, 0]]
+		dirPath = left(filePath,len(filePath) - len(filename))
+	else 	dirList = dir(filePath)
+		dirPath = filePath + "\"
+	end
+	for file in dirList
+		if not file[2] and right(file[1],5) = ".jack" //its a file with .jack extension
+			if pathType = 2
+				curPath = filePath + "\" + file[1]
+			else curPath = filePath
+			end
+			?"start tokenizing " + file[1]
+			outputfile = fopen(dirPath + "Token" + left(file[1],len(file[1]) - 4) + "xml", "w")
 	
-
-
-
-
-
-
-
-
-
+			tokenizer = new Tokenizer(curPath)
+			fwrite(outputfile, "<tokens>" + nl)
+		
+			while tokenizer.hasMoreTokens()
+				tokenizer.advance()
+				type = tokenizer.tokenType()
+				token = tokenizer.token()
+				if type = "symbol"
+					if token = "<"
+						token = "&lt;"
+					elseif token = ">"
+						token = "&gt;"
+					elseif token = "&"
+						token = "&amp;"
+					end
+				end
+				fwrite(outputfile, "<" + type + "> " + token)
+				fwrite(outputfile, " </" + type + ">" + nl)
+			end
+			fwrite(outputfile, "</tokens>" + nl)
+			fclose(outputfile)
+			
+			?"start compiling " + file[1]
+			compilationEngine = new CompilationEngine(dirPath +
+			 "Token" + left(file[1],len(file[1]) - 4) + "xml", 
+			dirPath + "Compile" + left(file[1],len(file[1]) - 4) + "xml")
+			compilationEngine.compileClass()
+			remove(dirPath + "Token" + left(file[1],len(file[1]) - 4) + "xml")
+		end
+	end
+	?"succuessfully compiled!"
+	
 
 func fileName(fullPath)
 	y = reverse(fullPath)
