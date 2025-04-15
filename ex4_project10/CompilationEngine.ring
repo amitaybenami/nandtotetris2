@@ -27,7 +27,6 @@ class CompilationEngine
 	func compileClassVarDec
 		start("classVarDec")
 		eat("keyword", -1)
-		end
 		if check("keyword", -1)
 			eat("keyword", -1)
 		else eat("identifier", -1)
