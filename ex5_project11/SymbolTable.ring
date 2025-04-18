@@ -9,16 +9,16 @@ class SymbolTable
 
 	func define name, type, kind		
 		if kind = "static" 
-			classTable[name] = [type, kind, staticAmount]	
+			classTable + [name, type, kind, staticAmount]
 			staticAmount += 1
 		elseif kind = "field" 
-			classTable[name] = [type, kind, fieldAmount]	
+			classTable + [name, type, kind, fieldAmount]
 			fieldAmount += 1	
 		elseif kind = "var" 
-			classTable[name] = [type, kind, varAmount]	
+			subroutineTable + [name, type, kind, varAmount]
 			varAmount += 1
-		else
-			classTable[name] = [type, kind, argAmount]	
+		elseif kind = "argument"
+			subroutineTable + [name, type, kind, argAmount]
 			argAmount += 1
 		end
 
@@ -29,40 +29,47 @@ class SymbolTable
 			return fieldAmount	
 		elseif kind = "var" 
 			return varAmount
-		else
-			return kindAmount
+		elseif kind = "argument"
+			return argAmount
 		end
 
 	func kindOf name
-		if subroutineTable[name]
-			return subroutineTable[name][2]
-		elseif classTable[name]
-			return classTable[name][2]
+		var = search(name)
+		if var
+			return var[3]
 		else return "none"
 		end
 
 	func typeOf name 		
-		if subroutineTable[name]
-			return subroutineTable[name][1]
-		elseif classTable[name]
-			return classTable[name][1]
+		var = search(name)
+		if var
+			return var[2]
 		else return "none"
 		end
 
 	func indexOf name 		
-		if subroutineTable[name]
-			return subroutineTable[name][3]
-		elseif classTable[name]
-			return classTable[name][3]
+		var = search(name)
+		if var
+			return var[4]
 		else return "none"
 		end
 
-
 	private 
 	
-	table = []
+	classTable = []
 	subroutineTable = []
 	staticAmount = 0
 	fieldAmount = 0
 	varAmount = 0
 	argAmount = 0
+
+	func search name
+		i = find(subroutineTable,name,1)
+		if i return subroutineTable[i]
+		end
+
+		i = find(classTable, name, 1)
+		if i return classTable[i]
+		end
+
+		return null

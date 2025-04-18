@@ -1,18 +1,14 @@
 class Tokenizer
 	
-	func init inFilename, outFilename //constructor - open the file for reading
-		file = fopen(inFilename,"r")
-		filename = filename(inFilename)
+	func init inFilePath, outFilePath//constructor - open the file for reading
+		file = fopen(inFilePath,"r")
 		if not file
 			raise("TokenizingError: can't open file")
 		end
-		outputfile = fopen(outFilename, "w")
+		outputfile = fopen(outFilePath, "w")
 		isClosed = false
-		tokenize()
 
-	func tokenize
-		?"start tokenizing " + filename
-	
+	func tokenize	
 		fwrite(outputfile, "<tokens>" + nl)
 	
 		while hasMoreTokens()
@@ -33,9 +29,9 @@ class Tokenizer
 		end
 		fwrite(outputfile, "</tokens>" + nl)
 		fclose(outputfile)
-		?"succuessfully tokenized!"
 
 	//boolean function returns if there are more tokens to read
+	//if true, the beginning of the next token is stored in current
 	//cleans the spaces and comments
 	func hasMoreTokens 
 		if isClosed
@@ -55,7 +51,7 @@ class Tokenizer
 				elseif nxt = "*"
 					multipleLinesComment()
 				else
-					fseek(file, -1, 1)
+					nxtCurrent = nxt
 					return true
 				end
 			elseif current != " " and current != print2str("\t") and
@@ -154,7 +150,6 @@ class Tokenizer
 	type = ""
 	token = ""
 	nxtCurrent = ""
-	filename
 
 	func saveChar
 		nxtCurrent = current
@@ -193,7 +188,3 @@ class Tokenizer
 				end
 			end
 		end
-
-	func fileName(fullPath)
-		y = reverse(fullPath)
-		return reverse(left(y,substr(y,'\') - 1))

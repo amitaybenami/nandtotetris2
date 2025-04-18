@@ -21,11 +21,17 @@ class VMWriter
 	func writeIf label
 		fwrite(outputfile, "if-goto " + label + nl)
 
-	func writecall name, nLocals
-		fwrite("call " + name + " " + nLocals + nl)
+	func writecall name, nArgs
+		fwrite(outputfile, "call " + name + " " + nArgs + nl)
+	
+	func writeFunction name, nLocals
+		fwrite(outputfile, "function " + name + " " + nLocals + nl)
 
 	func writeReturn 
-		fwrite("return" + nl)
+		fwrite(outputfile, "return" + nl)
 
 	func close
 		fclose(outputfile)
+
+	private
+	outputfile
