@@ -8,6 +8,7 @@ class Tokenizer
 		isClosed = false
 
 	//boolean function returns if there are more tokens to read
+	//if true, the beginning of the next token is stored in current
 	//cleans the spaces and comments
 	func hasMoreTokens 
 		if isClosed
@@ -27,7 +28,7 @@ class Tokenizer
 				elseif nxt = "*"
 					multipleLinesComment()
 				else
-					fseek(file, -1, 1)
+					nxtCurrent = nxt
 					return true
 				end
 			elseif current != " " and current != print2str("\t") and
