@@ -1,11 +1,34 @@
 class Tokenizer
 	
-	func init filename //constructor - open the file for reading
-		file = fopen(filename,"r")
+	func init inFilePath, outFilePath//constructor - open the file for reading
+		file = fopen(inFilePath,"r")
 		if not file
 			raise("TokenizingError: can't open file")
 		end
+		outputfile = fopen(outFilePath, "w")
 		isClosed = false
+
+	func tokenize	
+		fwrite(outputfile, "<tokens>" + nl)
+	
+		while hasMoreTokens()
+			advance()
+			curType = tokenType()
+			curToken = token()
+			if curType = "symbol"
+				if curToken = "<"
+					curToken = "&lt;"
+				elseif curToken = ">"
+					curToken = "&gt;"
+				elseif curToken = "&"
+					curToken = "&amp;"
+				end
+			end
+			fwrite(outputfile, "<" + curType + "> " + curToken)
+			fwrite(outputfile, " </" + curType + ">" + nl)
+		end
+		fwrite(outputfile, "</tokens>" + nl)
+		fclose(outputfile)
 
 	//boolean function returns if there are more tokens to read
 	//if true, the beginning of the next token is stored in current
@@ -121,6 +144,7 @@ class Tokenizer
 	private
 
 	file
+	outputfile
 	isClosed
 	current = ""
 	type = ""
@@ -164,4 +188,3 @@ class Tokenizer
 				end
 			end
 		end
-

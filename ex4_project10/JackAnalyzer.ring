@@ -26,36 +26,15 @@ func main
 			else curPath = filePath
 			end
 			?"start tokenizing " + file[1]
-			outputfile = fopen(dirPath + "Token" + left(file[1],len(file[1]) - 4) + "xml", "w")
-	
-			tokenizer = new Tokenizer(curPath)
-			fwrite(outputfile, "<tokens>" + nl)
-		
-			while tokenizer.hasMoreTokens()
-				tokenizer.advance()
-				type = tokenizer.tokenType()
-				token = tokenizer.token()
-				if type = "symbol"
-					if token = "<"
-						token = "&lt;"
-					elseif token = ">"
-						token = "&gt;"
-					elseif token = "&"
-						token = "&amp;"
-					end
-				end
-				fwrite(outputfile, "<" + type + "> " + token)
-				fwrite(outputfile, " </" + type + ">" + nl)
-			end
-			fwrite(outputfile, "</tokens>" + nl)
-			fclose(outputfile)
+			tokenFile = dirPath + "Token" + left(file[1],len(file[1]) - 4) + "xml"
+			tokenizer = new Tokenizer(curPath, tokenFile)
+			tokenizer.tokenize()
 			
 			?"start compiling " + file[1]
-			compilationEngine = new CompilationEngine(dirPath +
-			 "Token" + left(file[1],len(file[1]) - 4) + "xml", 
+			compilationEngine = new CompilationEngine(tokenFile, 
 			dirPath + "Compile" + left(file[1],len(file[1]) - 4) + "xml")
 			compilationEngine.compileClass()
-			remove(dirPath + "Token" + left(file[1],len(file[1]) - 4) + "xml")
+			remove(tokenFile)
 		end
 	end
 	?"succuessfully compiled!"
