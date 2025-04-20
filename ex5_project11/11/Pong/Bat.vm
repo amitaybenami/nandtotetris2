@@ -160,12 +160,12 @@ add
 push constant 511
 gt
 not
-if-goto Bat.move$L4
+if-goto Bat.move$L3
 push constant 511
 push this 2
 sub
 pop this 0
-label Bat.move$L4
+label Bat.move$L3
 push constant 0
 call Screen.setColor 1
 pop temp 0

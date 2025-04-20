@@ -168,7 +168,6 @@ class CompilationEngine
 			labels += 1
 			vmWriter.writeGoto(className + "." + subroutineName + "$L" + secondL)
 			vmWriter.writeLabel(className + "." + subroutineName + "$L" + firstL)
-			labels += 1
 			eat("symbol", "{")
 			compileStatements()
 			eat("symbol","}")

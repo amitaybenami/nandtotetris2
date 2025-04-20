@@ -173,117 +173,117 @@ add
 pop this 4
 push this 9
 not
+if-goto Ball.move$L2
+push this 7
+not
 if-goto Ball.move$L3
-push this 7
-not
-if-goto Ball.move$L4
 push this 0
 push constant 4
 add
 pop this 0
-goto Ball.move$L5
-label Ball.move$L4
-push this 1
-push constant 4
-add
-pop this 1
-label Ball.move$L5
-goto Ball.move$L7
+goto Ball.move$L4
 label Ball.move$L3
+push this 1
+push constant 4
+add
+pop this 1
+label Ball.move$L4
+goto Ball.move$L5
+label Ball.move$L2
 push this 7
 not
-if-goto Ball.move$L9
+if-goto Ball.move$L6
 push this 0
 push constant 4
 sub
 pop this 0
-goto Ball.move$L10
-label Ball.move$L9
+goto Ball.move$L7
+label Ball.move$L6
 push this 1
 push constant 4
 sub
 pop this 1
-label Ball.move$L10
 label Ball.move$L7
+label Ball.move$L5
 label Ball.move$L1
 push this 8
 not
+if-goto Ball.move$L8
+push this 7
+not
+if-goto Ball.move$L9
+push this 1
+push constant 4
+add
+pop this 1
+goto Ball.move$L10
+label Ball.move$L9
+push this 0
+push constant 4
+add
+pop this 0
+label Ball.move$L10
+goto Ball.move$L11
+label Ball.move$L8
+push this 7
+not
 if-goto Ball.move$L12
-push this 7
-not
-if-goto Ball.move$L13
 push this 1
 push constant 4
-add
+sub
 pop this 1
-goto Ball.move$L14
-label Ball.move$L13
-push this 0
-push constant 4
-add
-pop this 0
-label Ball.move$L14
-goto Ball.move$L16
+goto Ball.move$L13
 label Ball.move$L12
-push this 7
-not
-if-goto Ball.move$L18
-push this 1
-push constant 4
-sub
-pop this 1
-goto Ball.move$L19
-label Ball.move$L18
 push this 0
 push constant 4
 sub
 pop this 0
-label Ball.move$L19
-label Ball.move$L16
+label Ball.move$L13
+label Ball.move$L11
 push this 0
 push this 10
 gt
 not
 not
-if-goto Ball.move$L21
+if-goto Ball.move$L14
 push constant 1
 pop this 14
 push this 10
 pop this 0
-label Ball.move$L21
+label Ball.move$L14
 push this 0
 push this 11
 lt
 not
 not
-if-goto Ball.move$L22
+if-goto Ball.move$L15
 push constant 2
 pop this 14
 push this 11
 pop this 0
-label Ball.move$L22
+label Ball.move$L15
 push this 1
 push this 12
 gt
 not
 not
-if-goto Ball.move$L23
+if-goto Ball.move$L16
 push constant 3
 pop this 14
 push this 12
 pop this 1
-label Ball.move$L23
+label Ball.move$L16
 push this 1
 push this 13
 lt
 not
 not
-if-goto Ball.move$L24
+if-goto Ball.move$L17
 push constant 4
 pop this 14
 push this 13
 pop this 1
-label Ball.move$L24
+label Ball.move$L17
 push pointer 0
 call Ball.show 1
 pop temp 0
@@ -327,20 +327,20 @@ eq
 and
 or
 not
-if-goto Ball.bounce$L3
+if-goto Ball.bounce$L2
 push constant 20
 pop local 4
-goto Ball.bounce$L4
-label Ball.bounce$L3
+goto Ball.bounce$L3
+label Ball.bounce$L2
 push constant 5
 pop local 4
-label Ball.bounce$L4
+label Ball.bounce$L3
 label Ball.bounce$L1
 push this 14
 push constant 1
 eq
 not
-if-goto Ball.bounce$L6
+if-goto Ball.bounce$L4
 push constant 506
 pop local 0
 push local 3
@@ -356,13 +356,13 @@ push local 4
 call Math.multiply 2
 add
 pop local 1
-goto Ball.bounce$L7
-label Ball.bounce$L6
+goto Ball.bounce$L5
+label Ball.bounce$L4
 push this 14
 push constant 2
 eq
 not
-if-goto Ball.bounce$L9
+if-goto Ball.bounce$L6
 push constant 0
 pop local 0
 push local 3
@@ -377,13 +377,13 @@ push local 4
 call Math.multiply 2
 add
 pop local 1
-goto Ball.bounce$L10
-label Ball.bounce$L9
+goto Ball.bounce$L7
+label Ball.bounce$L6
 push this 14
 push constant 3
 eq
 not
-if-goto Ball.bounce$L12
+if-goto Ball.bounce$L8
 push constant 250
 pop local 1
 push local 2
@@ -399,8 +399,8 @@ push local 4
 call Math.multiply 2
 add
 pop local 0
-goto Ball.bounce$L13
-label Ball.bounce$L12
+goto Ball.bounce$L9
+label Ball.bounce$L8
 push constant 0
 pop local 1
 push local 2
@@ -415,9 +415,9 @@ push local 4
 call Math.multiply 2
 add
 pop local 0
-label Ball.bounce$L13
-label Ball.bounce$L10
+label Ball.bounce$L9
 label Ball.bounce$L7
+label Ball.bounce$L5
 push pointer 0
 push local 0
 push local 1

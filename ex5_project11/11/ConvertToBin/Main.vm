@@ -57,11 +57,11 @@ push constant 0
 call Memory.poke 2
 pop temp 0
 label Main.convert$L4
-goto Main.convert$L6
+goto Main.convert$L5
 label Main.convert$L2
 push constant 0
 pop local 2
-label Main.convert$L6
+label Main.convert$L5
 goto Main.convert$L0
 label Main.convert$L1
 push constant 0
