@@ -136,12 +136,14 @@ class CompilationEngine
 			compileExpression()
 			eat("symbol","]")
 			vmWriter.writeArithmetic("add")
-			vmWriter.writePop("pointer", 1)
 		end
 
 		eat("symbol", "=")
 		compileExpression()
 		if arr
+			vmWriter.writePop("temp", 1)
+			vmWriter.writePop("pointer", 1)
+			vmWriter.writePush("temp", 1)
 			vmWriter.writePop("that", 0)
 		else  	
 			vmWriter.writePop(kindOf(name), symbolTable.indexOf(name))
