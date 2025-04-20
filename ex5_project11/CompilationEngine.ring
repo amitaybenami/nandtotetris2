@@ -57,6 +57,9 @@ class CompilationEngine
 		compileSubroutineBody()
 
 	func compileParameterList
+		if subroutineType = "method"
+			symbolTable.define("this", className, "argument")
+		end
 		if not check("symbol", ")")
 			if check("keyword", -1)
 				varType = eat("keyword", -1)	
@@ -83,7 +86,6 @@ class CompilationEngine
 		nLocals = symbolTable.varCount("var")
 		vmWriter.writeFunction(className + "." + subroutineName, nLocals) 
 		if subroutineType = "method"
-			symbolTable.define("this", className, "argument")
 			vmWriter.writePush("argument", 0)
 			vmWriter.writePop("pointer", 0)
 		elseif subroutineType = "constructor"
