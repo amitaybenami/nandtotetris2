@@ -22,7 +22,7 @@ class Parser
 		command = getWord(listedLine)
 		if command = "add" or command = "sub" or command = "neg" or command = "eq"
 			or command = "gt" or command = "lt" or command = "and"
-			 or command = "or" or command = "not"
+			 or command = "or" or command = "not" or command = "sub#1"
 			arithmetic(command, listedLine)
 		elseif command = "push" or command = "pop"
 			pushPop(command, listedLine)

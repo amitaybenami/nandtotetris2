@@ -12,12 +12,14 @@ class CodeWriter
 		fwrite(outputfile, "//" + command + nl)	
 		fwrite(outputfile, "@SP" + nl)
 		if command = "add" or command = "sub" or command = "eq" or command = "gt"
-			or command = "lt" or command = "and" or command = "or"//two operands
+		or command = "lt" or command = "and" or command = "or"
+		or command = "sub#1" //two operands
 			fwrite(outputfile, "AM=M-1" + nl)		
 			fwrite(outputfile, "D=M" + nl)
 			fwrite(outputfile, "A=A-1" + nl)
 			if command = "add" fwrite(outputfile, "M=D+M" + nl)
 			elseif command = "sub" fwrite(outputfile, "M=M-D" + nl)
+			elseif command = "sub#1" fwrite(outputfile, "M=D-M" + nl)
 			elseif command = "and" fwrite(outputfile, "M=D&M" + nl)
 			elseif command = "or" fwrite(outputfile, "M=D|M" + nl)
 			elseif command = "eq" or command = "gt" or command = "lt"
