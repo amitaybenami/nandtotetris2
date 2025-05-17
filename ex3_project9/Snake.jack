@@ -147,19 +147,19 @@ class Snake {
 	
 	function void drawLeft(int location) {
 		let memAddress = 16384+location;
-		do Memory.poke(memAddress+0, 3120);
+		do Memory.poke(memAddress+0, 4080);
 		do Memory.poke(memAddress+32, 8184);
 		do Memory.poke(memAddress+64, 16380);
 		do Memory.poke(memAddress+96, 32766);
 		do Memory.poke(memAddress+128, -1);
-		do Memory.poke(memAddress+160, -1);
-		do Memory.poke(memAddress+192, -1);
-		do Memory.poke(memAddress+224, -1);
-		do Memory.poke(memAddress+256, -1);
-		do Memory.poke(memAddress+288, -1);
-		do Memory.poke(memAddress+320, -1633);
-		do Memory.poke(memAddress+352, -1633);
-		do Memory.poke(memAddress+384, 31134);
+		do Memory.poke(memAddress+160, -57);
+		do Memory.poke(memAddress+192, 32711);
+		do Memory.poke(memAddress+224, 32767);
+		do Memory.poke(memAddress+256, 32767);
+		do Memory.poke(memAddress+288, 32711);
+		do Memory.poke(memAddress+320, -57);
+		do Memory.poke(memAddress+352, -1);
+		do Memory.poke(memAddress+384, 32766);
 		do Memory.poke(memAddress+416, 16380);
 		do Memory.poke(memAddress+448, 8184);
 		do Memory.poke(memAddress+480, 4080);

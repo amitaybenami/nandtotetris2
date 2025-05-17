@@ -54,7 +54,7 @@ class Game {
         let started = false;
         let direction = 2;       // Initial direction: right
         let nextDirection = 2;
-        let speed = 600;         // Initial speed
+        let speed = 400;         // Initial speed
         let score = 0;
 
         // --- Wait for SPACE to begin ---
@@ -68,19 +68,6 @@ class Game {
 
         // --- Main game loop ---
         while (true) {
-            let key = Keyboard.keyPressed();
-            
-            // Pause game on SPACE
-            if (key = 32) {
-                do Output.moveCursor(22, 10);
-                do Output.printString("Paused. Press SPACE to resume...");
-				// Wait until key is released
-				while (key = 32) {
-					let key = Keyboard.keyPressed();
-					do Sys.wait(1);
-				}
-                do pause();
-            }
 
             // --- Direction polling loop (also controls movement speed) ---
             let i = 0;
@@ -100,6 +87,18 @@ class Game {
                 if (key = 130) {
                     if (~(direction = 2)) { let nextDirection = 4; }
                 }
+				
+				// Pause game on SPACE
+				if (key = 32) {
+					do Output.moveCursor(22, 10);
+					do Output.printString("Paused. Press SPACE to resume...");
+					// Wait until key is released
+					while (key = 32) {
+						let key = Keyboard.keyPressed();
+						do Sys.wait(1);
+					}
+					do pause();
+				}
 
                 do Sys.wait(1);
                 let i = i + 1;

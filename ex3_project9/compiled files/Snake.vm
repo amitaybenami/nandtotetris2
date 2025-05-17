@@ -611,7 +611,7 @@ pop static 0
 push static 0
 push constant 0
 add
-push constant 3120
+push constant 4080
 call Memory.poke 2
 pop temp 0
 push static 0
@@ -642,56 +642,52 @@ pop temp 0
 push static 0
 push constant 160
 add
-push constant 1
+push constant 57
 neg
 call Memory.poke 2
 pop temp 0
 push static 0
 push constant 192
 add
-push constant 1
-neg
+push constant 32711
 call Memory.poke 2
 pop temp 0
 push static 0
 push constant 224
 add
-push constant 1
-neg
+push constant 32767
 call Memory.poke 2
 pop temp 0
 push static 0
 push constant 256
 add
-push constant 1
-neg
+push constant 32767
 call Memory.poke 2
 pop temp 0
 push static 0
 push constant 288
 add
-push constant 1
-neg
+push constant 32711
 call Memory.poke 2
 pop temp 0
 push static 0
 push constant 320
 add
-push constant 1633
+push constant 57
 neg
 call Memory.poke 2
 pop temp 0
 push static 0
 push constant 352
 add
-push constant 1633
+push constant 1
 neg
 call Memory.poke 2
 pop temp 0
 push static 0
 push constant 384
 add
-push constant 31134
+push constant 32766
 call Memory.poke 2
 pop temp 0
 push static 0

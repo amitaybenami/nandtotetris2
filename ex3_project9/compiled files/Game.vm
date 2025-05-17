@@ -246,7 +246,7 @@ push constant 2
 pop this 4
 push constant 2
 pop local 3
-push constant 600
+push constant 400
 pop local 5
 push constant 0
 pop this 3
@@ -406,14 +406,90 @@ push constant 0
 not
 not
 if-goto WHILE_END0
+push constant 0
+pop local 2
+label WHILE_EXP1
+push local 2
+push local 5
+lt
+not
+if-goto WHILE_END1
 call Keyboard.keyPressed 0
 pop local 1
 push local 1
-push constant 32
+push constant 131
 eq
 if-goto IF_TRUE1
 goto IF_FALSE1
 label IF_TRUE1
+push this 4
+push constant 3
+eq
+not
+if-goto IF_TRUE2
+goto IF_FALSE2
+label IF_TRUE2
+push constant 1
+pop local 3
+label IF_FALSE2
+label IF_FALSE1
+push local 1
+push constant 132
+eq
+if-goto IF_TRUE3
+goto IF_FALSE3
+label IF_TRUE3
+push this 4
+push constant 4
+eq
+not
+if-goto IF_TRUE4
+goto IF_FALSE4
+label IF_TRUE4
+push constant 2
+pop local 3
+label IF_FALSE4
+label IF_FALSE3
+push local 1
+push constant 133
+eq
+if-goto IF_TRUE5
+goto IF_FALSE5
+label IF_TRUE5
+push this 4
+push constant 1
+eq
+not
+if-goto IF_TRUE6
+goto IF_FALSE6
+label IF_TRUE6
+push constant 3
+pop local 3
+label IF_FALSE6
+label IF_FALSE5
+push local 1
+push constant 130
+eq
+if-goto IF_TRUE7
+goto IF_FALSE7
+label IF_TRUE7
+push this 4
+push constant 2
+eq
+not
+if-goto IF_TRUE8
+goto IF_FALSE8
+label IF_TRUE8
+push constant 4
+pop local 3
+label IF_FALSE8
+label IF_FALSE7
+push local 1
+push constant 32
+eq
+if-goto IF_TRUE9
+goto IF_FALSE9
+label IF_TRUE9
 push constant 22
 push constant 10
 call Output.moveCursor 2
@@ -486,101 +562,23 @@ push constant 46
 call String.appendChar 2
 call Output.printString 1
 pop temp 0
-label WHILE_EXP1
+label WHILE_EXP2
 push local 1
 push constant 32
 eq
 not
-if-goto WHILE_END1
+if-goto WHILE_END2
 call Keyboard.keyPressed 0
 pop local 1
 push constant 1
 call Sys.wait 1
 pop temp 0
-goto WHILE_EXP1
-label WHILE_END1
+goto WHILE_EXP2
+label WHILE_END2
 push pointer 0
 call Game.pause 1
 pop temp 0
-label IF_FALSE1
-push constant 0
-pop local 2
-label WHILE_EXP2
-push local 2
-push local 5
-lt
-not
-if-goto WHILE_END2
-call Keyboard.keyPressed 0
-pop local 1
-push local 1
-push constant 131
-eq
-if-goto IF_TRUE2
-goto IF_FALSE2
-label IF_TRUE2
-push this 4
-push constant 3
-eq
-not
-if-goto IF_TRUE3
-goto IF_FALSE3
-label IF_TRUE3
-push constant 1
-pop local 3
-label IF_FALSE3
-label IF_FALSE2
-push local 1
-push constant 132
-eq
-if-goto IF_TRUE4
-goto IF_FALSE4
-label IF_TRUE4
-push this 4
-push constant 4
-eq
-not
-if-goto IF_TRUE5
-goto IF_FALSE5
-label IF_TRUE5
-push constant 2
-pop local 3
-label IF_FALSE5
-label IF_FALSE4
-push local 1
-push constant 133
-eq
-if-goto IF_TRUE6
-goto IF_FALSE6
-label IF_TRUE6
-push this 4
-push constant 1
-eq
-not
-if-goto IF_TRUE7
-goto IF_FALSE7
-label IF_TRUE7
-push constant 3
-pop local 3
-label IF_FALSE7
-label IF_FALSE6
-push local 1
-push constant 130
-eq
-if-goto IF_TRUE8
-goto IF_FALSE8
-label IF_TRUE8
-push this 4
-push constant 2
-eq
-not
-if-goto IF_TRUE9
-goto IF_FALSE9
-label IF_TRUE9
-push constant 4
-pop local 3
 label IF_FALSE9
-label IF_FALSE8
 push constant 1
 call Sys.wait 1
 pop temp 0
@@ -588,8 +586,8 @@ push local 2
 push constant 1
 add
 pop local 2
-goto WHILE_EXP2
-label WHILE_END2
+goto WHILE_EXP1
+label WHILE_END1
 push local 3
 pop this 4
 push this 0
